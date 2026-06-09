@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +23,20 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 820) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const scrollToSection = (e, targetId) => {
     e.preventDefault();
     const target = document.getElementById(targetId);
@@ -30,6 +45,7 @@ function App() {
         behavior: "smooth",
         block: "start",
       });
+      setIsMenuOpen(false);
     }
   };
 
@@ -40,7 +56,23 @@ function App() {
           <img src="/logo.png" alt="17stage Logo" className="logo-img" />
         </a>
 
-        <div className="nav-links">
+        <button
+          type="button"
+          className={`menu-toggle ${isMenuOpen ? "open" : ""}`}
+          aria-label="Open navigation menu"
+          aria-expanded={isMenuOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+        >
+          <span className="menu-toggle-line" />
+          <span className="menu-toggle-line" />
+          <span className="menu-toggle-line" />
+        </button>
+
+        <div
+          id="primary-navigation"
+          className={`nav-links ${isMenuOpen ? "open" : ""}`}
+        >
           <a href="#about" onClick={(e) => scrollToSection(e, "about")}>
             HAQQIMIZDA
           </a>
